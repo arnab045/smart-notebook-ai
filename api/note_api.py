@@ -39,6 +39,12 @@ class NoteRequest(BaseModel):
 
     num_questions: int = 10
 
+class QuizRequest(BaseModel):
+
+    content: str
+
+    num_questions: int = 10
+
 class ProfileRequest(BaseModel):
 
     email: str
@@ -170,7 +176,7 @@ def improve_existing_note(request: NoteRequest):
     } 
 
 @router.post("/generate-quiz")
-def create_quiz(request: NoteRequest):
+def create_quiz(request: QuizRequest):
 
     quiz = generate_quiz(
         request.content,
