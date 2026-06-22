@@ -57,6 +57,14 @@ class ProfileRequest(BaseModel):
 
     skills: str
 
+class EnhancedPDFRequest(BaseModel):
+
+    pdf_path: str
+
+    improved_content: str
+
+    title: str
+
 
 # =========================
 # SAVE NOTE
@@ -310,5 +318,33 @@ def fetch_community_posts():
 
         "success": True,
         "posts": posts
+
+    }
+
+
+from pdf_export.enhanced_pdf import (
+    create_enhanced_pdf
+)
+
+@router.post("/generate-enhanced-pdf")
+def generate_enhanced_pdf(
+    request: EnhancedPDFRequest
+):
+
+    new_pdf = create_enhanced_pdf(
+
+        request.pdf_path,
+
+        request.improved_content,
+
+        request.title
+
+    )
+
+    return {
+
+        "success": True,
+
+        "pdf_path": new_pdf
 
     }
