@@ -3,7 +3,8 @@ from pydantic import BaseModel
 
 from note_analysis.missing_points_backend import detect_missing_points
 from note_analysis.improve_backend import improve_note
-from ai_assistant.quiz_generator_backend import generate_quiz
+from ai_assistant.quiz_generator_backend import generate_quiz 
+from fastapi.responses import FileResponse
 
 from database.models import (
     save_note,
@@ -348,3 +349,12 @@ def generate_enhanced_pdf(
         "pdf_path": new_pdf
 
     }
+
+@router.get("/download-pdf")
+def download_pdf(path: str):
+
+    return FileResponse(
+        path,
+        filename="enhanced_note.pdf",
+        media_type="application/pdf"
+    )
