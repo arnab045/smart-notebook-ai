@@ -8,39 +8,58 @@ def improve_note(file_path):
 
         pdf = fitz.open(file_path)
 
-        page = pdf.load_page(0)
+        max_pages = min(len(pdf), 10)
 
-        pix = page.get_pixmap(
-            matrix=fitz.Matrix(3, 3)
-        )
+        images = []
 
-        image = Image.frombytes(
-            "RGB",
-            [pix.width, pix.height],
-            pix.samples
-        )
+        for page_num in range(max_pages):
+
+            page = pdf.load_page(page_num)
+
+            pix = page.get_pixmap(
+                matrix=fitz.Matrix(2, 2)
+            )
+
+            image = Image.frombytes(
+                "RGB",
+                [pix.width, pix.height],
+                pix.samples
+            )
+
+            images.append(image)
 
     else:
 
         image = Image.open(file_path)
 
-    prompt = """
-    Improve this study note.
+    prompt = f"""
+    You are an expert university professor.
 
-    Rules:
+    The uploaded document contains {max_pages} pages.
 
-    - Fix mistakes
-    - Add missing concepts
-    - Add explanations
-    - Add headings
-    - Add bullet points
-    - Make exam friendly
+    Read ALL pages carefully before answering.
 
-    Return clean plain text only.
+    Do not summarize.
+
+    For every topic found:
+
+    1. Topic Name
+    2. Existing Content
+    3. Missing Concepts
+    4. Missing Definitions
+    5. Missing Formulas
+    6. Missing Examples
+    7. Missing Diagrams
+    8. Detailed Explanation
+    9. Exam Preparation Tips
+
+    Mention page references whenever possible.
+
+    Return a detailed enhancement report.
     """
 
     response = model.generate_content(
-        [prompt, image]
+        [prompt] + images
     )
 
     return response.text

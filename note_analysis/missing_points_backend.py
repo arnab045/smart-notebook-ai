@@ -8,17 +8,25 @@ def detect_missing_points(file_path):
 
         pdf = fitz.open(file_path)
 
-        page = pdf.load_page(0)
+        max_pages = min(len(pdf), 10)
 
-        pix = page.get_pixmap(
-            matrix=fitz.Matrix(3, 3)
-        )
+        images = []
 
-        image = Image.frombytes(
-            "RGB",
-            [pix.width, pix.height],
-            pix.samples
-        )
+        for page_num in range(max_pages):
+
+            page = pdf.load_page(page_num)
+
+            pix = page.get_pixmap(
+                matrix=fitz.Matrix(2, 2)
+            )
+
+            image = Image.frombytes(
+                "RGB",
+                [pix.width, pix.height],
+                pix.samples
+            )
+
+            images.append(image)
 
     else:
 
@@ -38,7 +46,7 @@ def detect_missing_points(file_path):
     """
 
     response = model.generate_content(
-        [prompt, image]
+        [prompt] + images
     )
 
     return response.text
