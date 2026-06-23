@@ -1,23 +1,28 @@
-import sys
-import os
-
-sys.path.append(
-    os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__),
-            "..",
-            ".."
-        )
-    )
-)
-
 from core.gemini_config import model
 from PIL import Image
-
+import fitz
 
 def detect_missing_points(file_path):
 
-    image = Image.open(file_path)
+    if file_path.lower().endswith(".pdf"):
+
+        pdf = fitz.open(file_path)
+
+        page = pdf.load_page(0)
+
+        pix = page.get_pixmap(
+            matrix=fitz.Matrix(3, 3)
+        )
+
+        image = Image.frombytes(
+            "RGB",
+            [pix.width, pix.height],
+            pix.samples
+        )
+
+    else:
+
+        image = Image.open(file_path)
 
     prompt = """
     Analyze this study note.
@@ -29,7 +34,7 @@ def detect_missing_points(file_path):
     - Important topics not included
     - Suggestions for improvement
 
-    Give response in clean bullet points.
+    Return clean bullet points only.
     """
 
     response = model.generate_content(
