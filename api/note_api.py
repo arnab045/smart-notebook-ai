@@ -160,8 +160,8 @@ def fetch_note(note_id: int):
 def analyze_note(request: NoteRequest):
 
     result = detect_missing_points(
-        request.content
-    )
+        request.original_file_path
+)
 
     return {
 
@@ -174,15 +174,14 @@ def analyze_note(request: NoteRequest):
 def improve_existing_note(request: NoteRequest):
 
     improved = improve_note(
-        request.content
+        request.original_file_path
     )
 
     return {
-
         "success": True,
         "improved_content": improved
+    }
 
-    } 
 
 @router.post("/generate-quiz")
 def create_quiz(request: QuizRequest):

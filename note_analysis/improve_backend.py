@@ -12,21 +12,32 @@ sys.path.append(
 )
 
 from core.gemini_config import model
+from PIL import Image
 
-def improve_note(text):
-    prompt = f"""
-    Improve and organize this study note properly:
+
+def improve_note(file_path):
+
+    image = Image.open(file_path)
+
+    prompt = """
+    Improve this study note.
+
     Rules:
-    - Fix OCR mistakes
-    - Fix grammar
+
+    - Fix mistakes
     - Add missing concepts
+    - Add explanations
     - Add headings
     - Add bullet points
     - Make exam friendly
-    - Preserve original meaning
-    {text}
+
+    Return clean plain text only.
+
+    Do not use markdown.
     """
 
-    response = model.generate_content(prompt)
+    response = model.generate_content(
+        [prompt, image]
+    )
 
     return response.text

@@ -12,25 +12,28 @@ sys.path.append(
 )
 
 from core.gemini_config import model
+from PIL import Image
 
 
-def detect_missing_points(text):
+def detect_missing_points(file_path):
 
-    prompt = f"""
-    Analyze this study note carefully.
+    image = Image.open(file_path)
+
+    prompt = """
+    Analyze this study note.
 
     Find:
+
     - Missing important points
     - Incomplete concepts
     - Important topics not included
     - Suggestions for improvement
 
     Give response in clean bullet points.
-
-    Note:
-    {text}
     """
 
-    response = model.generate_content(prompt)
+    response = model.generate_content(
+        [prompt, image]
+    )
 
     return response.text
