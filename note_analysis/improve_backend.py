@@ -33,29 +33,47 @@ def improve_note(file_path):
         image = Image.open(file_path)
 
     prompt = f"""
-    You are an expert university professor.
+    You are an expert academic note reviewer.
 
-    The uploaded document contains {max_pages} pages.
+    Analyze the uploaded note page by page.
 
-    Read ALL pages carefully before answering.
+    IMPORTANT RULES:
 
-    Do not summarize.
+    1. Do NOT generate long reports.
+    2. Do NOT generate proofs.
+    3. Do NOT generate Hall's theorem.
+    4. Do NOT generate research-level explanations.
+    5. Do NOT generate unnecessary formulas.
+    6. Focus only on the most important missing or weak points.
+    7. Maximum 2-3 improvements per page.
+    8. Tell what can be improved 
+    9. Keep explanations simple and student-friendly.
 
-    For every topic found:
+    Output format:
 
-    1. Topic Name
-    2. Existing Content
-    3. Missing Concepts
-    4. Missing Definitions
-    5. Missing Formulas
-    6. Missing Examples
-    7. Missing Diagrams
-    8. Detailed Explanation
-    9. Exam Preparation Tips
+    Page X
 
-    Mention page references whenever possible.
+    Issue:
+    What is missing, incorrect, or difficult to understand?
 
-    Return a detailed enhancement report.
+    Improved Version:
+    Write a clearer and easier version.
+
+    Example:
+    Give one short example if necessary.
+
+    --------------------------------
+
+    Page Y
+
+    Issue:
+    ...
+
+    Improved Version:
+    ...
+
+    Example:
+    ...
     """
 
     response = model.generate_content(
