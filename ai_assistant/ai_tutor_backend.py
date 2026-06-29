@@ -2,35 +2,80 @@ from core.gemini_config import model
 
 
 def ask_ai_tutor(
+
     question,
     note_title,
-    note_content
+    note_content,
+    history
+
 ):
+
+    conversation = ""
+
+    for message in history:
+
+        if message["role"] == "user":
+
+            conversation += f"Student: {message['content']}\n"
+
+        else:
+
+            conversation += f"Tutor: {message['content']}\n"
 
     prompt = f"""
 You are Smart Notebook AI Tutor.
 
-A student has opened one specific study note.
+A student is studying one uploaded note.
 
-Title:
+----------------------------------------
+
+NOTE TITLE:
 {note_title}
 
-Study Note:
+----------------------------------------
+
+NOTE CONTENT:
 {note_content}
 
-Student Question:
+----------------------------------------
+
+PREVIOUS CONVERSATION:
+
+{conversation}
+
+----------------------------------------
+
+CURRENT QUESTION:
+
 {question}
+
+----------------------------------------
 
 Rules:
 
-- Answer ONLY using this study note as the primary context.
-- If necessary, use your own academic knowledge only to explain the note more clearly.
-- Do not change the topic.
-- Explain in simple language.
-- Use bullet points when appropriate.
-- Give examples whenever helpful.
-- If the student asks for exam tips, provide concise exam-focused advice.
-- If the answer is not present in the note, clearly mention that it is additional explanation.
+1. Always answer based on the uploaded note.
+
+2. Use previous conversation as context.
+
+3. If the student says:
+- Explain more
+- Continue
+- Give another example
+- Why?
+- Simplify it
+- Explain again
+
+You MUST understand what they are referring to from the previous conversation.
+
+4. Explain like a friendly university tutor.
+
+5. Use simple English.
+
+6. Use bullet points whenever helpful.
+
+7. Give examples whenever appropriate.
+
+8. If the answer is outside the uploaded note, clearly mention that it is additional explanation.
 
 Return only the answer.
 """

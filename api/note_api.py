@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
+from typing import List
 
 from note_analysis.missing_points_backend import detect_missing_points
 from note_analysis.improve_backend import improve_note
@@ -54,6 +55,8 @@ class TutorRequest(BaseModel):
     note_title: str
 
     note_content: str
+
+    history: List = []
 
 class ProfileRequest(BaseModel):
 
@@ -376,7 +379,9 @@ def ai_tutor(request: TutorRequest):
 
         request.note_title,
 
-        request.note_content
+        request.note_content, 
+
+        request.history
 
     )
 
