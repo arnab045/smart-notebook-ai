@@ -5,6 +5,7 @@ from note_analysis.missing_points_backend import detect_missing_points
 from note_analysis.improve_backend import improve_note
 from ai_assistant.quiz_generator_backend import generate_quiz 
 from fastapi.responses import FileResponse
+from ai_assistant.ai_tutor_backend import ask_ai_tutor
 
 from database.models import (
     save_note,
@@ -45,6 +46,14 @@ class QuizRequest(BaseModel):
     content: str
 
     num_questions: int = 10
+
+class TutorRequest(BaseModel):
+
+    question: str
+
+    note_title: str
+
+    note_content: str
 
 class ProfileRequest(BaseModel):
 
@@ -357,3 +366,24 @@ def download_pdf(path: str):
         filename="enhanced_note.pdf",
         media_type="application/pdf"
     )
+
+@router.post("/ai-tutor")
+def ai_tutor(request: TutorRequest):
+
+    answer = ask_ai_tutor(
+
+        request.question,
+
+        request.note_title,
+
+        request.note_content
+
+    )
+
+    return {
+
+        "success": True,
+
+        "answer": answer
+
+    }
