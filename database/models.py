@@ -109,7 +109,6 @@ def create_user(name, email, password):
         cursor.execute(
             """
             INSERT INTO users (
-
                 full_name,
                 email,
                 password,
@@ -117,9 +116,7 @@ def create_user(name, email, password):
                 university,
                 department,
                 skills
-
             )
-
             VALUES (?, ?, ?, '', '', '', '')
             """,
             (
@@ -133,7 +130,9 @@ def create_user(name, email, password):
 
         return True
 
-    except:
+    except Exception as e:
+
+        print("CREATE USER ERROR:", e)
 
         return False
 
