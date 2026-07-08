@@ -7,6 +7,21 @@ def create_tables():
 
     cursor = conn.cursor()
 
+    cursor.execute("""
+    PRAGMA table_info(users)
+    """)
+
+    columns = [col[1] for col in cursor.fetchall()]
+
+    if "name" in columns and "full_name" not in columns:
+
+        cursor.execute("""
+        ALTER TABLE users
+        RENAME COLUMN name TO full_name
+        """)
+
+        conn.commit()
+
     #User table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
