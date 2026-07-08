@@ -7,6 +7,9 @@ def create_tables():
 
     cursor = conn.cursor()
 
+    cursor.execute("DROP TABLE IF EXISTS users")
+    cursor.execute("DROP TABLE IF EXISTS notes")
+
     #User table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
@@ -494,7 +497,7 @@ def get_profile(email):
         """
         SELECT
 
-            name,
+            full_name,
             email,
             bio,
             university,
@@ -528,7 +531,7 @@ def get_user_basic_info(email):
         """
         SELECT
 
-            name,
+            full_name,
             university,
             department
 
