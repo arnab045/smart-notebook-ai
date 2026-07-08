@@ -7,9 +7,6 @@ def create_tables():
 
     cursor = conn.cursor()
 
-    cursor.execute("DROP TABLE IF EXISTS users")
-    cursor.execute("DROP TABLE IF EXISTS notes")
-
     #User table
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
