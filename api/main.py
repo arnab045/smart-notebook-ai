@@ -12,7 +12,8 @@ from fastapi.staticfiles import StaticFiles
 from database.models import (
     create_tables,
     create_follow_table,
-    create_like_table
+    create_like_table,
+    create_community_tables
 )
 
 app = FastAPI()
@@ -24,6 +25,7 @@ app.mount(
     name="page-images"
 )
 create_tables()
+create_community_tables()
 create_follow_table()
 create_like_table()
 
