@@ -387,13 +387,12 @@ def create_like_table():
 # ADD LIKE
 # =========================
 
-def like_note(note_id, user_email):
+def toggle_like(note_id, user_email):
 
     conn = connect_db()
 
     cursor = conn.cursor()
 
-    # prevent duplicate like
     cursor.execute(
         """
         SELECT *
@@ -401,12 +400,33 @@ def like_note(note_id, user_email):
         WHERE note_id = ?
         AND user_email = ?
         """,
-        (note_id, user_email)
+        (
+            note_id,
+            user_email
+        )
     )
 
     existing = cursor.fetchone()
 
-    if not existing:
+    if existing:
+
+        cursor.execute(
+            """
+            DELETE FROM likes
+            WHERE note_id = ?
+            AND user_email = ?
+            """,
+            (
+                note_id,
+                user_email
+            )
+        )
+
+        conn.commit()
+
+        liked = False
+
+    else:
 
         cursor.execute(
             """
@@ -424,7 +444,22 @@ def like_note(note_id, user_email):
 
         conn.commit()
 
+        liked = True
+
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM likes
+        WHERE note_id = ?
+        """,
+        (note_id,)
+    )
+
+    total_likes = cursor.fetchone()[0]
+
     conn.close()
+
+    return liked, total_likes
 
 
 # =========================
@@ -451,6 +486,31 @@ def count_likes(note_id):
     conn.close()
 
     return count 
+
+def has_liked(note_id, user_email):
+
+    conn = connect_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT *
+        FROM likes
+        WHERE note_id = ?
+        AND user_email = ?
+        """,
+        (
+            note_id,
+            user_email
+        )
+    )
+
+    liked = cursor.fetchone() is not None
+
+    conn.close()
+
+    return liked
 
 # =========================
 # UPDATE PROFILE

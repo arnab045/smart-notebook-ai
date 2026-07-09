@@ -3,7 +3,8 @@ from fastapi import APIRouter
 from database.models import (
     get_public_notes,
     count_likes,
-    like_note
+    toggle_like,
+    has_liked
 )
 
 router = APIRouter()
@@ -14,7 +15,7 @@ router = APIRouter()
 # =========================
 
 @router.get("/community/posts")
-def fetch_community_posts():
+def fetch_community_posts(user_email: str = ""):
 
     notes = get_public_notes()
 
@@ -29,9 +30,22 @@ def fetch_community_posts():
             "subject": note[2],
             "content": note[3],
             "user_email": note[4],
-            "likes": count_likes(note[0])
+
+            "likes": count_likes(note[0]),
+
+            "liked": has_liked(
+                note[0],
+                user_email
+            )
 
         })
+
+    return {
+
+        "success": True,
+        "posts": formatted_posts
+
+    }
 
     return {
 
@@ -51,13 +65,19 @@ class LikeRequest(BaseModel):
 @router.post("/community/like")
 def like_post(request: LikeRequest):
 
-    like_note(
+    liked, total_likes = toggle_like(
+
         request.note_id,
         request.user_email
+
     )
 
     return {
 
-        "success": True
+        "success": True,
+
+        "liked": liked,
+
+        "likes": total_likes
 
     }
