@@ -2,7 +2,8 @@ from fastapi import APIRouter
 
 from database.models import (
     get_public_notes,
-    count_likes
+    count_likes,
+    like_note
 )
 
 router = APIRouter()
@@ -36,5 +37,27 @@ def fetch_community_posts():
 
         "success": True,
         "posts": formatted_posts
+
+    }
+
+from pydantic import BaseModel
+
+class LikeRequest(BaseModel):
+
+    note_id: int
+    user_email: str
+
+
+@router.post("/community/like")
+def like_post(request: LikeRequest):
+
+    like_note(
+        request.note_id,
+        request.user_email
+    )
+
+    return {
+
+        "success": True
 
     }
