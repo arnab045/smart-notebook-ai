@@ -3,8 +3,11 @@ from fastapi import APIRouter
 from database.models import (
     get_public_notes,
     count_likes,
+    count_comments,
     toggle_like,
-    has_liked
+    has_liked,
+    add_comment,
+    get_comments
 )
 
 router = APIRouter()
@@ -32,6 +35,8 @@ def fetch_community_posts(user_email: str = ""):
             "user_email": note[4],
 
             "likes": count_likes(note[0]),
+
+            "comments": count_comments(note[0]),
 
             "liked": has_liked(
                 note[0],
@@ -79,5 +84,70 @@ def like_post(request: LikeRequest):
         "liked": liked,
 
         "likes": total_likes
+
+    }
+
+from pydantic import BaseModel
+
+class CommentRequest(BaseModel):
+
+    note_id: int
+    user_email: str
+    comment: str
+
+
+@router.post("/community/comment")
+def comment_post(request: CommentRequest):
+
+    add_comment(
+        request.note_id,
+        request.user_email,
+        request.comment
+    )
+
+    comments = get_comments(request.note_id)
+
+    return {
+
+        "success": True,
+
+        "comments": [
+
+            {
+
+                "user_email": c[0],
+
+                "comment": c[1]
+
+            }
+
+            for c in comments
+
+        ]
+
+    }
+
+@router.get("/community/comments/{note_id}")
+def fetch_comments(note_id: int):
+
+    comments = get_comments(note_id)
+
+    return {
+
+        "success": True,
+
+        "comments": [
+
+            {
+
+                "user_email": c[0],
+
+                "comment": c[1]
+
+            }
+
+            for c in comments
+
+        ]
 
     }

@@ -512,6 +512,27 @@ def has_liked(note_id, user_email):
 
     return liked
 
+def count_comments(note_id):
+
+    conn = connect_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM comments
+        WHERE note_id = ?
+        """,
+        (note_id,)
+    )
+
+    count = cursor.fetchone()[0]
+
+    conn.close()
+
+    return count
+
 # =========================
 # UPDATE PROFILE
 # =========================
