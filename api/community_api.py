@@ -7,7 +7,8 @@ from database.models import (
     toggle_like,
     has_liked,
     add_comment,
-    get_comments
+    get_comments,
+    save_note
 )
 
 router = APIRouter()
@@ -95,6 +96,13 @@ class CommentRequest(BaseModel):
     user_email: str
     comment: str
 
+class SaveRequest(BaseModel):
+
+    user_email: str
+    title: str
+    subject: str
+    content: str
+
 
 @router.post("/community/comment")
 def comment_post(request: CommentRequest):
@@ -149,5 +157,34 @@ def fetch_comments(note_id: int):
             for c in comments
 
         ]
+
+    }
+
+@router.post("/community/save")
+def save_from_community(request: SaveRequest):
+
+    save_note(
+
+        request.user_email,
+
+        request.title,
+
+        request.subject,
+
+        request.content,
+
+        "",     # original_file_path
+
+        "",     # pdf_path
+
+        "community"
+
+    )
+
+    return {
+
+        "success": True,
+
+        "message": "Note saved successfully"
 
     }
