@@ -241,8 +241,19 @@ def get_public_notes():
 
     cursor.execute(
         """
-        SELECT id, title, subject, content, user_email
+        SELECT
+
+            id,
+            title,
+            subject,
+            content,
+            user_email,
+            original_file_path,
+            pdf_path,
+            file_type
+
         FROM notes
+
         WHERE is_public = 1
         """
     )

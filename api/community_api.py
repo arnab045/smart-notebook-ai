@@ -30,10 +30,20 @@ def fetch_community_posts(user_email: str = ""):
         formatted_posts.append({
 
             "id": note[0],
+
             "title": note[1],
+
             "subject": note[2],
+
             "content": note[3],
+
             "user_email": note[4],
+
+            "original_file_path": note[5],
+
+            "pdf_path": note[6],
+
+            "file_type": note[7],
 
             "likes": count_likes(note[0]),
 
