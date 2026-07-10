@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.auth_api import router as auth_router
 from api.note_api import router as note_router
-from api.community_api import router as community_router
+from api.community_api import router as community_router 
+from api.progress_api import router as progress_router
 
 from api.upload_api import router as upload_router
 from api.tutor_api import router as tutor_router
@@ -47,6 +48,7 @@ app.include_router(community_router)
 app.include_router(upload_router)
 app.include_router(tutor_router)
 app.include_router(exam_router)
+app.include_router(progress_router)
 
 @app.get("/")
 def root():

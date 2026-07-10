@@ -967,3 +967,55 @@ def get_note_page_images(pdf_path):
             )
 
     return images
+
+# =========================
+# PROGRESS OVERVIEW
+# =========================
+
+def get_progress_overview(user_email):
+
+    conn = connect_db()
+    cursor = conn.cursor()
+
+    # Total Notes
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM notes
+        WHERE user_email = ?
+        """,
+        (user_email,)
+    )
+    total_notes = cursor.fetchone()[0]
+
+    # Public Notes
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM notes
+        WHERE user_email = ?
+        AND is_public = 1
+        """,
+        (user_email,)
+    )
+    public_notes = cursor.fetchone()[0]
+
+    # Private Notes
+    cursor.execute(
+        """
+        SELECT COUNT(*)
+        FROM notes
+        WHERE user_email = ?
+        AND is_public = 0
+        """,
+        (user_email,)
+    )
+    private_notes = cursor.fetchone()[0]
+
+    conn.close()
+
+    return {
+        "total_notes": total_notes,
+        "public_notes": public_notes,
+        "private_notes": private_notes
+    }
