@@ -67,6 +67,25 @@ def create_tables():
         is_public INTEGER DEFAULT 0
     )
     """) 
+    #quiz_table 
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS quiz_results (
+
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+        user_email TEXT,
+
+        subject TEXT,
+
+        score INTEGER,
+
+        total_questions INTEGER,
+
+        percentage REAL,
+
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
 
     conn.commit()
 
@@ -1019,3 +1038,81 @@ def get_progress_overview(user_email):
         "public_notes": public_notes,
         "private_notes": private_notes
     }
+
+# =========================
+# QUIZ OVERVIEW
+# =========================
+
+def get_quiz_overview(user_email):
+
+    conn = connect_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT
+
+            COUNT(*),
+            AVG(score),
+            MAX(score)
+
+        FROM quiz_results
+
+        WHERE user_email = ?
+        """,
+        (user_email,)
+    )
+
+    result = cursor.fetchone()
+
+    conn.close()
+
+    return {
+
+        "quiz_taken": result[0] or 0,
+
+        "average_score": round(result[1] or 0, 1),
+
+        "best_score": result[2] or 0
+
+    }
+
+def save_quiz_result(
+    user_email,
+    subject,
+    score,
+    total_questions,
+    percentage
+):
+
+    conn = connect_db()
+
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO quiz_results (
+
+            user_email,
+            subject,
+            score,
+            total_questions,
+            percentage
+
+        )
+
+        VALUES (?, ?, ?, ?, ?)
+        """,
+        (
+            user_email,
+            subject,
+            score,
+            total_questions,
+            percentage
+        )
+    )
+
+    conn.commit()
+
+    conn.close()

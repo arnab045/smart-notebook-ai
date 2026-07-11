@@ -6,6 +6,8 @@ from api.note_api import router as note_router
 from api.community_api import router as community_router 
 from api.progress_api import router as progress_router
 
+from api.quiz_api import router as quiz_router
+
 from api.upload_api import router as upload_router
 from api.tutor_api import router as tutor_router
 from api.exam_prep_api import router as exam_router 
@@ -49,6 +51,7 @@ app.include_router(upload_router)
 app.include_router(tutor_router)
 app.include_router(exam_router)
 app.include_router(progress_router)
+app.include_router(quiz_router)
 
 @app.get("/")
 def root():
